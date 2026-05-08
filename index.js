@@ -10,6 +10,7 @@ app.use(express.json());
 //Definir a porta
 const PORT = 3000;
 
+/*
 // Banco de Dados Fake e auto incremento
 let students = []
 let idGenerator = 1
@@ -54,6 +55,38 @@ app.delete('/students/:id', (req, res) => {
 })
 
 
+
+*/
+
+
+// Banco de Dados Fake para Contatos
+let contacts = []
+let contactIdGenerator = 1
+
+// Rota para buscar contatos
+app.get('/contacts', (req, res) => {
+    res.json(contacts);
+});
+
+// Rota para cadastrar contato (Aqui entram todos os campos do exercício!)
+app.post('/contacts', (req, res) => {
+    const { name, email, phone, birthDate, cep, neighborhood, street, number, state, city } = req.body;
+
+    const contact = {
+        id: contactIdGenerator++,
+        name, email, phone, birthDate, cep, neighborhood, street, number, state, city
+    };
+
+    contacts.push(contact);
+    res.json(contact);
+});
+
+// Rota para deletar contato
+app.delete('/contacts/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    contacts = contacts.filter(c => c.id !== id);
+    res.json({ message: "Contato removido com sucesso!" });
+});
 
 
 // Iniciar o servidor
