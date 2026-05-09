@@ -81,11 +81,31 @@ app.post('/contacts', (req, res) => {
     res.json(contact);
 });
 
-// Rota para deletar contato
-app.delete('/contacts/:id', (req, res) => {
+// Rota para deletar contato usando JSON body
+app.delete('/contacts', (req, res) => {
+    const { id } = req.body;
+    
+    if (!id) {
+        return res.status(400).json({ message: "ID é obrigatório no corpo da requisição!" });
+    }
+
+    contacts = contacts.filter(c => c.id !== parseInt(id));
+    res.json({ message: `Contato com ID ${id} removido com sucesso!` });
+});
+
+// Rota para atualizar contato
+app.put('/contacts/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    contacts = contacts.filter(c => c.id !== id);
-    res.json({ message: "Contato removido com sucesso!" });
+    const { name, email, phone, birthDate, cep, neighborhood, street, number, state, city } = req.body;
+
+    const index = contacts.findIndex(c => c.id === id);
+
+    if (index !== -1) {
+        contacts[index] = { id, name, email, phone, birthDate, cep, neighborhood, street, number, state, city };
+        res.json(contacts[index]);
+    } else {
+        res.status(404).json({ message: "Contato não encontrado!" });
+    }
 });
 
 
